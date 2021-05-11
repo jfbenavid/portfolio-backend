@@ -7,18 +7,18 @@ function withErrorStack (err, stack) {
   return err
 }
 
-function wrapErrors (err, req, res, next) {
+function wrapErrors (err, _, __, next) {
   if (!err.isBoom) { next(boom.badImplementation(err)) }
 
   next(err)
 }
 
-function logErrors (err, req, res, next) {
+function logErrors (err, _, __, next) {
   console.log(err)
   next(err)
 }
 
-function errorHandler (err, req, res, next) {
+function errorHandler (err, _, res, __) {
   const { output: { statusCode, payload } } = err
   res.status(statusCode)
   res.json(withErrorStack(payload, err.stack))
