@@ -1,8 +1,8 @@
-const peopleRoute = require('./people')
+const headerRoute = require('./header')
 const services = require('../services')
 
 const configRoutes = (app) => {
-  peopleRoute(app, services)
+  headerRoute(app, services)
 }
 
 module.exports = configRoutes

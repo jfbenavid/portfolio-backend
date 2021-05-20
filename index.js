@@ -8,16 +8,16 @@ const { logErrors, errorHandler, wrapErrors } = require('./utils/middleware/erro
 const notFoundHandler = require('./utils/middleware/notFoundHandler')
 
 const app = express()
-
-app.use(cors(config.cors))
-app.use(express.json())
+  .use(cors(config.cors))
+  .use(express.json())
 
 configRoutes(app, services)
 
-app.use(notFoundHandler)
+app
+  .use(notFoundHandler)
+  .use(logErrors)
+  .use(wrapErrors)
+  .use(errorHandler)
+  .listen(config.port, () => console.log(`Server running on port ${config.port}`))
 
-app.use(logErrors)
-app.use(wrapErrors)
-app.use(errorHandler)
-
-app.listen(config.port, () => console.log(`Server running on port ${config.port}`))
+module.exports = app
