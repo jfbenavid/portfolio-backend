@@ -23,12 +23,12 @@ const crud = (service, cacheResponse) => ({
       next(err)
     }
   },
-  patch: (req, res, next) => {
+  patch: async (req, res, next) => {
     try {
       const data = req.body
       const id = req.params.id
 
-      service.update(id, data)
+      await service.update(id, data)
       res.status(202).json({ _id: id, ...data })
     } catch (err) {
       next(err)
@@ -37,7 +37,7 @@ const crud = (service, cacheResponse) => ({
   delete: async (req, res, next) => {
     try {
       const id = req.params.id
-      service.delete(id)
+      await service.delete(id)
 
       res.status(204).send()
     } catch (err) {
