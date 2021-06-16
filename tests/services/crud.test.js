@@ -6,19 +6,21 @@ const { reqMock, resMock, nextMock } = require('../mocks/crud')
 
 jest.mock('../../utils/cacheResponse')
 jest.mock('../../lib')
-let sut = {}
+
+const sut = crudService(mongoService(mongoDb, 'test'), cacheResponse)
+cacheResponse.mockImplementation(() => undefined)
 
 beforeEach(() => {
   resMock.result = {}
-  sut = crudService(mongoService(mongoDb, 'test'), cacheResponse)
-  cacheResponse.mockImplementation(() => undefined)
 })
 
 describe('Crud service', () => {
   describe('get', () => {
     it('should get data from database', async () => {
       mongoDb.get
-        .mockImplementation(() => ({ data: 'test' }))
+        .mockImplementation((_collection, _query) => ({ data: 'test' }))
+
+      reqMock.params.lang = 'prueba'
 
       await sut.get(reqMock, resMock, nextMock)
       expect(resMock.result).toStrictEqual({ data: 'test' })
@@ -36,7 +38,7 @@ describe('Crud service', () => {
   describe('post', () => {
     it('should create data to the database', async () => {
       mongoDb.create
-        .mockImplementation(() => 10)
+        .mockImplementation((_collection, _data) => 10)
 
       await sut.post(reqMock, resMock, nextMock)
       expect(resMock.result).toStrictEqual({ _id: 10 })
@@ -54,7 +56,7 @@ describe('Crud service', () => {
   describe('patch', () => {
     it('should update data in the database', async () => {
       mongoDb.update
-        .mockImplementation(() => 10)
+        .mockImplementation((_collection, _id, _data) => 10)
 
       reqMock.params.id = 10
 
@@ -74,7 +76,7 @@ describe('Crud service', () => {
   describe('delete', () => {
     it('should delete data in the database', async () => {
       mongoDb.delete
-        .mockImplementation(() => undefined)
+        .mockImplementation((_collection, _id) => undefined)
 
       await sut.delete(reqMock, resMock, nextMock)
       expect(resMock.result).toStrictEqual({ test: 'test' })
